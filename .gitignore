@@ -1,0 +1,5 @@
+﻿QuickKey.exe
+release/
+python版/__pycache__/
+*.pdb
+*.log

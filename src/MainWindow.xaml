@@ -1,0 +1,406 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="键游 · Win11 快捷键训练"
+        Width="432" Height="724"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        FontFamily="Microsoft YaHei UI"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Ink" Color="#FFF5EE"/>
+        <SolidColorBrush x:Key="Muted" Color="#AE9F9B"/>
+        <SolidColorBrush x:Key="Mint" Color="#FF3B21"/>
+        <SolidColorBrush x:Key="MintDark" Color="#FF6B2C"/>
+        <SolidColorBrush x:Key="SoftMint" Color="#321318"/>
+        <SolidColorBrush x:Key="Line" Color="#4A2729"/>
+
+        <Style x:Key="IconButton" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Background" Value="#201417"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" CornerRadius="4" BorderBrush="#5E3031" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#382024"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.68"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="{x:Type Button}">
+            <Setter Property="Height" Value="54"/>
+            <Setter Property="Background" Value="{StaticResource Mint}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="PrimaryBorder" Background="{TemplateBinding Background}" CornerRadius="4" BorderBrush="#FF8A32" BorderThickness="1">
+                            <Grid>
+                                <Border Height="2" Margin="6,2,6,0" VerticalAlignment="Top" Background="#A6FFD7A8" CornerRadius="0"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PrimaryBorder" Property="Background" Value="#FF5A23"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="PrimaryBorder" Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                <Setter TargetName="PrimaryBorder" Property="RenderTransform">
+                                    <Setter.Value><ScaleTransform ScaleX="0.98" ScaleY="0.98"/></Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="NavButton" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="3" Padding="11,6" BorderBrush="#392326" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="RootGrid">
+        <Grid x:Name="BubbleView" Visibility="Collapsed">
+            <Border x:Name="BubbleShadow" Width="86" Height="86" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="#55FF3018" CornerRadius="43" Margin="2,8,2,0">
+                <Border.Effect><BlurEffect Radius="15"/></Border.Effect>
+            </Border>
+            <Button x:Name="BubbleButton" Width="78" Height="78" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    BorderThickness="0" Background="Transparent" Cursor="Hand" ToolTip="点击展开 · Ctrl + Alt + K 快速呼出">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform><ScaleTransform x:Name="BubbleScale"/></Grid.RenderTransform>
+                            <Ellipse>
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FF6230" Offset="0"/>
+                                        <GradientStop Color="#B80F1B" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse Margin="5" Stroke="#FFFFA24D" StrokeThickness="1"/>
+                            <TextBlock Text="02" Foreground="#FFF5EE" FontFamily="Bahnschrift Condensed" FontWeight="Bold" FontSize="25"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="OpenMenuItem" Header="打开键游"/>
+                        <Separator/>
+                        <MenuItem x:Name="ExitMenuItem" Header="退出"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Border x:Name="BubbleBadge" Background="#FFB12B" CornerRadius="2" MinWidth="22" Height="18" BorderBrush="#241012" BorderThickness="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="58,-54,0,0" IsHitTestVisible="False">
+                <TextBlock x:Name="BubblePoints" Text="0" Foreground="White" FontSize="10" FontWeight="Bold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0"/>
+            </Border>
+        </Grid>
+
+        <Border x:Name="AppShell" Background="#0C090B" BorderBrush="#9D292E" BorderThickness="1"
+                CornerRadius="8" Margin="10">
+            <Border.Effect>
+                <DropShadowEffect Color="#E52D20" Opacity="0.34" BlurRadius="30" ShadowDepth="9" Direction="270"/>
+            </Border.Effect>
+            <Grid ClipToBounds="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="68"/>
+                    <RowDefinition Height="82"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="68"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.RowSpan="4" IsHitTestVisible="False" Panel.ZIndex="0">
+                    <Border Height="3" VerticalAlignment="Top">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#FF3B21" Offset="0"/>
+                                <GradientStop Color="#FF9A32" Offset="0.62"/>
+                                <GradientStop Color="#301014" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+                    <Border Width="2" HorizontalAlignment="Left" Margin="5,72,0,74" Background="#5C171D"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,7,16,0">
+                        <Border Width="18" Height="2" Background="#FF3B21" Margin="0,0,4,0"/>
+                        <Border Width="8" Height="2" Background="#FF9A32"/>
+                    </StackPanel>
+                    <TextBlock Text="KY-11 // PILOT PROFILE 02" Foreground="#4A292A" FontFamily="Bahnschrift" FontSize="8"
+                               HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,18,72"/>
+                </Grid>
+
+                <Grid x:Name="DragArea" Margin="22,12,17,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Width="39" Height="39" CornerRadius="4" Background="{StaticResource Mint}" BorderBrush="#FF9C3E" BorderThickness="1">
+                            <Grid>
+                                <TextBlock Text="02" Foreground="White" FontFamily="Bahnschrift Condensed" FontWeight="Bold" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Border Width="8" Height="8" CornerRadius="0" Background="#FFD04A" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-2,-2,0"/>
+                            </Grid>
+                        </Border>
+                        <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="键游 // KY-11" FontSize="16" FontWeight="Bold" Foreground="{StaticResource Ink}"/>
+                            <TextBlock Text="SHORTCUT SYNC TRAINING" FontFamily="Bahnschrift" FontSize="9.5" Foreground="#D66B49" Margin="0,1,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Background="#2C1618" BorderBrush="#7A2F30" BorderThickness="1" CornerRadius="3" Height="28" Padding="9,0" Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="⚡" FontSize="11" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="LevelText" Text="SYNC 01" FontFamily="Bahnschrift" FontSize="10" FontWeight="Bold" Foreground="#FF9A32" Margin="3,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <Button x:Name="CollapseButton" Style="{StaticResource IconButton}" Content="—" Margin="0,0,6,0" Foreground="#BDA7A4" FontSize="16" Cursor="Hand"/>
+                        <Button x:Name="CloseButton" Style="{StaticResource IconButton}" Content="×" Foreground="#FF6A3A" FontSize="16" Cursor="Hand"/>
+                    </StackPanel>
+                </Grid>
+
+                <Border Grid.Row="1" Margin="22,5,22,8" Background="#151013" CornerRadius="4" BorderBrush="#5B292C" BorderThickness="1">
+                    <Grid Margin="17,11">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="1"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Width="39" Height="39" CornerRadius="3" Background="#301419" BorderBrush="#842D31" BorderThickness="1">
+                                <TextBlock Text="✦" Foreground="{StaticResource MintDark}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="总积分" Foreground="{StaticResource Muted}" FontSize="10.5"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="PointsText" Text="0" Foreground="{StaticResource Ink}" FontWeight="Bold" FontSize="20"/>
+                                    <TextBlock Text=" XP" Foreground="{StaticResource MintDark}" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Bottom" Margin="1,0,0,3"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                        <Border Grid.Column="1" Background="#51282B" Margin="0,4"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <Border Width="39" Height="39" CornerRadius="3" Background="#2F1C14" BorderBrush="#7E4825" BorderThickness="1">
+                                <TextBlock Text="🔥" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="10,0,6,0" VerticalAlignment="Center">
+                                <TextBlock Text="连续练习" Foreground="{StaticResource Muted}" FontSize="10.5"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="StreakText" Text="1" Foreground="{StaticResource Ink}" FontWeight="Bold" FontSize="20"/>
+                                    <TextBlock Text=" 天" Foreground="#FF9A32" FontWeight="SemiBold" FontSize="11" VerticalAlignment="Bottom" Margin="1,0,0,3"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Grid x:Name="TrainingView" Grid.Row="2" Margin="22,8,22,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="LessonNumberBadge" Background="{StaticResource SoftMint}" BorderBrush="#6F272B" BorderThickness="1" CornerRadius="2" Padding="8,3">
+                                    <TextBlock x:Name="LessonNumberText" Text="第 1 关" FontSize="10.5" Foreground="{StaticResource MintDark}" FontWeight="SemiBold"/>
+                                </Border>
+                                <TextBlock x:Name="MasteredBadge" Text="✓ SYNCED" Visibility="Collapsed" FontSize="10.5" Foreground="#FFD05A" Background="#3A2515" Margin="8,0,0,0" Padding="7,3"/>
+                            </StackPanel>
+                            <TextBlock x:Name="LessonTitle" Text="一秒回到桌面" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Ink}" Margin="0,8,0,0"/>
+                            <TextBlock x:Name="LessonSubtitle" Text="窗口再多，也能瞬间清场" FontSize="12" Foreground="{StaticResource Muted}" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Background="#181115" BorderBrush="#4F292B" BorderThickness="1" CornerRadius="2" Padding="10,7">
+                            <TextBlock x:Name="ProgressCount" Text="00 / 08" FontFamily="Bahnschrift" FontSize="11" Foreground="#FF7A42" FontWeight="SemiBold"/>
+                        </Border>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Margin="0,14,0,0">
+                        <Border Height="7" CornerRadius="1" Background="#241519" BorderBrush="#4A2327" BorderThickness="1"/>
+                        <Border x:Name="ProgressFill" Height="7" CornerRadius="1" Background="{StaticResource Mint}" HorizontalAlignment="Left" Width="0"/>
+                    </Grid>
+
+                    <Border Grid.Row="2" Margin="0,17,0,0" Background="#121013" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="4" Padding="15,15,15,13">
+                        <StackPanel>
+                            <TextBlock Text="INPUT SEQUENCE // 按键序列" FontFamily="Bahnschrift, Microsoft YaHei UI" FontSize="10.5" Foreground="#C86A4A" HorizontalAlignment="Center"/>
+                            <WrapPanel x:Name="KeyCaps" HorizontalAlignment="Center" Margin="0,9,0,10"/>
+                            <Border Height="1" Background="#54272A" Margin="3,0"/>
+                            <TextBlock Text="TACTICAL NOTE // 操作提示" Foreground="{StaticResource MintDark}" FontSize="10.5" FontWeight="SemiBold" Margin="0,9,0,0"/>
+                            <TextBlock x:Name="TipText" Text="先按住 Windows 徽标键，再轻点 D。" Foreground="#C0AEAA" FontSize="11.5" TextWrapping="Wrap" Margin="0,3,0,0" LineHeight="18"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Grid.Row="3" Margin="1,15,1,0">
+                        <TextBlock Text="SYNC PROCEDURE // 三步完成" FontFamily="Bahnschrift, Microsoft YaHei UI" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Ink}" Margin="0,0,0,9"/>
+                        <Grid Margin="0,0,0,7">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Width="23" Height="23" CornerRadius="2" Background="#34151A" BorderBrush="#7D2C31" BorderThickness="1" VerticalAlignment="Top"><TextBlock Text="01" Foreground="{StaticResource MintDark}" FontFamily="Bahnschrift" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <TextBlock x:Name="StepOne" Grid.Column="1" Text="先看清屏幕上的按键组合" FontSize="11" Foreground="#C0AEAA" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,7">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Width="23" Height="23" CornerRadius="2" Background="#34151A" BorderBrush="#7D2C31" BorderThickness="1" VerticalAlignment="Top"><TextBlock Text="02" Foreground="{StaticResource MintDark}" FontFamily="Bahnschrift" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <TextBlock x:Name="StepTwo" Grid.Column="1" Text="点击开始练习，应用会监听你的操作" FontSize="11" Foreground="#C0AEAA" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Width="23" Height="23" CornerRadius="2" Background="#34151A" BorderBrush="#7D2C31" BorderThickness="1" VerticalAlignment="Top"><TextBlock Text="03" Foreground="{StaticResource MintDark}" FontFamily="Bahnschrift" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                            <TextBlock x:Name="StepThree" Grid.Column="1" Text="在任意位置按下快捷键，完成挑战" FontSize="11" Foreground="#C0AEAA" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <Grid Grid.Row="4" Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="38"/><ColumnDefinition Width="*"/><ColumnDefinition Width="38"/></Grid.ColumnDefinitions>
+                        <Button x:Name="PreviousButton" Grid.Column="0" Style="{StaticResource IconButton}" Content="‹" Foreground="#BDA7A4" FontSize="24" Cursor="Hand" IsEnabled="False"/>
+                        <Button x:Name="StartButton" Grid.Column="1" Style="{StaticResource PrimaryButton}" Margin="10,0" Content="开始同步  ·  +10 XP" Foreground="#FFF5EE" FontSize="15" FontWeight="SemiBold" Cursor="Hand"/>
+                        <Button x:Name="NextButton" Grid.Column="2" Style="{StaticResource IconButton}" Content="›" Foreground="#BDA7A4" FontSize="24" Cursor="Hand"/>
+                    </Grid>
+                </Grid>
+
+                <Grid x:Name="OverviewView" Grid.Row="2" Margin="22,8,22,8" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="SHORTCUT ARCHIVE" FontFamily="Bahnschrift" FontSize="10" FontWeight="Bold" Foreground="#FF8A32"/>
+                        <TextBlock Text="快捷键总览" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Ink}" Margin="0,2,0,0"/>
+                        <TextBlock x:Name="OverviewSummary" Text="官方目录 228 条" FontSize="10.5" Foreground="{StaticResource Muted}" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="130"/></Grid.ColumnDefinitions>
+                        <Border Background="#151013" BorderBrush="#5B292C" BorderThickness="1" CornerRadius="3" Margin="0,0,7,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="32"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <TextBlock Text="⌕" Foreground="#FF8A32" FontFamily="Segoe UI Symbol" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox x:Name="OverviewSearchBox" Grid.Column="1" Background="Transparent" BorderThickness="0" Foreground="#FFF4EC"
+                                         CaretBrush="#FF8A32" FontSize="11" VerticalContentAlignment="Center" Padding="2,7,6,7" ToolTip="搜索组合键、动作或类别"/>
+                            </Grid>
+                        </Border>
+                        <ComboBox x:Name="CategoryCombo" Grid.Column="1" Height="34" Background="#211317" Foreground="#FFF4EC"
+                                  BorderBrush="#5B292C" Padding="8,0" FontSize="10.5" VerticalContentAlignment="Center"/>
+                    </Grid>
+
+                    <Grid Grid.Row="2" Margin="0,10,0,0">
+                        <Border Height="6" Background="#241519" BorderBrush="#4A2327" BorderThickness="1"/>
+                        <Border x:Name="OverviewProgressFill" Height="6" Background="#FF3B21" HorizontalAlignment="Left" Width="0"/>
+                    </Grid>
+
+                    <Border Grid.Row="3" Margin="0,10,0,0" Background="#121013" BorderBrush="#53272A" BorderThickness="1" CornerRadius="3">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="6">
+                            <StackPanel x:Name="OverviewList"/>
+                        </ScrollViewer>
+                    </Border>
+
+                    <TextBlock Grid.Row="4" Text="MICROSOFT SUPPORT // 核对日期 2026-07-16" FontFamily="Bahnschrift" FontSize="8"
+                               Foreground="#766865" HorizontalAlignment="Right" Margin="0,7,0,0"/>
+                </Grid>
+
+                <Grid x:Name="AchievementView" Grid.Row="2" Margin="22,8,22,8" Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="PILOT STATUS" FontFamily="Bahnschrift" FontSize="10" FontWeight="Bold" Foreground="#FF8A32"/>
+                        <TextBlock Text="同步成就" FontSize="22" FontWeight="Bold" Foreground="{StaticResource Ink}" Margin="0,2,0,0"/>
+
+                        <Border Background="#151013" BorderBrush="#9C3035" BorderThickness="1" CornerRadius="4" Margin="0,18,0,0" Padding="20,22">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="105" Height="105" Background="#FF3B21" BorderBrush="#FF8A32" BorderThickness="1" CornerRadius="4">
+                                    <TextBlock Text="02" Foreground="#FFF4EC" FontFamily="Bahnschrift Condensed" FontSize="42" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock x:Name="AchievementTitle" Text="新手同步中" Foreground="{StaticResource Ink}" FontSize="19" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                                <TextBlock x:Name="AchievementDetail" Text="再掌握 8 个即可解锁毕业徽章" Foreground="{StaticResource Muted}" FontSize="11.5" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                <TextBlock x:Name="AchievementCatalog" Text="官方快捷键目录：228 条" Foreground="#FF8A32" FontFamily="Bahnschrift" FontSize="10" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#2C1719" BorderBrush="#53272A" BorderThickness="1" CornerRadius="3" Margin="0,16,0,0" Padding="18,15">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="CALL SIGN // 全局呼出" Foreground="#FF8A32" FontFamily="Bahnschrift" FontSize="9" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Ctrl + Alt + K" Foreground="{StaticResource Ink}" FontFamily="Bahnschrift" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                <TextBlock Text="在任何程序中呼出或收起键游" Foreground="{StaticResource Muted}" FontSize="10.5" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <Border Grid.Row="3" Background="#100C0F" CornerRadius="0,0,8,8" BorderBrush="#4B2629" BorderThickness="0,1,0,0">
+                    <Grid Margin="36,8,36,7">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <Button x:Name="LearnNav" Grid.Column="0" Style="{StaticResource NavButton}" Foreground="#FF7042" Background="#32161B" Cursor="Hand">
+                            <StackPanel><TextBlock Text="⌨" FontFamily="Segoe UI Symbol" FontSize="16" HorizontalAlignment="Center"/><TextBlock Text="学习" FontSize="9.5" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,1,0,0"/></StackPanel>
+                        </Button>
+                        <Button x:Name="LibraryNav" Grid.Column="1" Style="{StaticResource NavButton}" Foreground="{StaticResource Muted}" Cursor="Hand">
+                            <StackPanel><TextBlock Text="▦" FontSize="16" HorizontalAlignment="Center"/><TextBlock Text="总览" FontSize="9.5" HorizontalAlignment="Center" Margin="0,1,0,0"/></StackPanel>
+                        </Button>
+                        <Button x:Name="AwardNav" Grid.Column="2" Style="{StaticResource NavButton}" Foreground="{StaticResource Muted}" Cursor="Hand">
+                            <StackPanel><TextBlock Text="♛" FontSize="16" HorizontalAlignment="Center"/><TextBlock Text="成就" FontSize="9.5" HorizontalAlignment="Center" Margin="0,1,0,0"/></StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <Grid x:Name="SuccessOverlay" Grid.RowSpan="4" Visibility="Collapsed" Panel.ZIndex="20">
+                    <Border Background="#E6090709" CornerRadius="8"/>
+                    <Canvas x:Name="ConfettiCanvas" IsHitTestVisible="False"/>
+                    <Border Width="300" Height="325" Background="#151013" CornerRadius="6" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="#A53636" BorderThickness="1">
+                        <Border.Effect><DropShadowEffect Color="#FF3524" Opacity="0.30" BlurRadius="26" ShadowDepth="8"/></Border.Effect>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="244">
+                            <Grid Width="98" Height="98" HorizontalAlignment="Center">
+                                <Ellipse Fill="#35151B" Stroke="#8D3035" StrokeThickness="1"/>
+                                <Ellipse Margin="10" Fill="#FF3B21"/>
+                                <TextBlock Text="✓" Foreground="White" FontSize="43" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Text="漂亮！一次成功" Foreground="{StaticResource Ink}" FontSize="23" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                            <TextBlock x:Name="SuccessText" Text="你掌握了「显示桌面」" Foreground="{StaticResource Muted}" FontSize="12" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                            <Border Background="#3B2315" BorderBrush="#81502B" BorderThickness="1" CornerRadius="3" Padding="15,7" HorizontalAlignment="Center" Margin="0,15,0,0">
+                                <TextBlock x:Name="RewardText" Text="⚡ +10 XP" Foreground="#FFB548" FontSize="15" FontWeight="Bold"/>
+                            </Border>
+                            <Button x:Name="ContinueButton" Style="{StaticResource PrimaryButton}" Content="进入下一阶段" Margin="0,20,0,0" Foreground="#FFF5EE" FontSize="15" FontWeight="SemiBold" Cursor="Hand"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border x:Name="Toast" Grid.RowSpan="4" Visibility="Collapsed" Panel.ZIndex="30" Background="#F21C1114" BorderBrush="#923033" BorderThickness="1" CornerRadius="3"
+                        Padding="14,10" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,78,0,0">
+                    <TextBlock x:Name="ToastText" Text="已开启全局按键监听" Foreground="White" FontSize="11.5" MaxWidth="350" TextWrapping="Wrap" TextAlignment="Center"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
